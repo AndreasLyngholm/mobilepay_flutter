@@ -4,7 +4,7 @@
 @implementation MobilePayFlutterPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
     FlutterMethodChannel* channel = [FlutterMethodChannel
-                                     methodChannelWithName:@"mobile_pay_flutter"
+                                     methodChannelWithName:@"mobilepay_flutter"
                                      binaryMessenger:[registrar messenger]];
     MobilePayFlutterPlugin* instance = [[MobilePayFlutterPlugin alloc] init];
     [instance setChannel:channel];
@@ -18,7 +18,6 @@
 
 - (MobilePayCountry)getCountry:(NSString*)country {
     if([@"fi" isEqualToString:country]) return MobilePayCountry_Finland;
-    if([@"no" isEqualToString:country]) return MobilePayCountry_Norway;
     if([@"dk" isEqualToString:country]) return MobilePayCountry_Denmark;
     return MobilePayCountry_Denmark;
 }
@@ -43,13 +42,12 @@
     } else if([@"setRequestCode" isEqualToString:call.method]) {
         result(nil);
     } else if([@"createPayment" isEqualToString:call.method]) {
-        NSNumber *price = call.arguments[@"productPrice"];
+        NSDecimalNumber *price = call.arguments[@"productPrice"];
         NSString *orderId = call.arguments[@"orderId"];
-        MobilePayPayment *payment = [[MobilePayPayment alloc]initWithOrderId:orderId productPrice:[price floatValue]];
+        MobilePayPayment *payment = [[MobilePayPayment alloc]initWithOrderId:orderId productPrice:price];
         if (payment && (payment.orderId.length > 0) && (payment.productPrice >= 0)) {
-            
-            [[MobilePayManager sharedInstance] beginMobilePaymentWithPayment:payment error:^(NSError * __nonnull error) {
-                [self sendError:error forOrder:orderId];
+            [[MobilePayManager sharedInstance] beginMobilePaymentWithPayment:payment error:^(MobilePayErrorPayment * __nonnull error) {
+                [self sendError:error.error forOrder:orderId];
             }];
         }
         result(nil);
@@ -79,7 +77,7 @@
 }
 
 -(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    
+
     //IMPORTANT - THIS IS DEPRECATED IN IOS9 - USE 'application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options' INSTEAD
     [self handleMobilePayPaymentWithUrl:url];
     return YES;
@@ -90,17 +88,17 @@
     [[MobilePayManager sharedInstance]handleMobilePayPaymentWithUrl:url success:^(MobilePaySuccessfulPayment * _Nullable mobilePaySuccessfulPayment) {
         NSString *orderId = mobilePaySuccessfulPayment.orderId;
         NSString *transactionId = mobilePaySuccessfulPayment.transactionId;
-        float amountWithdrawnFromCard = mobilePaySuccessfulPayment.amountWithdrawnFromCard;
-        
+        NSDecimalNumber *amountWithdrawnFromCard = mobilePaySuccessfulPayment.amountWithdrawnFromCard;
+
         [self->channel invokeMethod:@"mobilePaySuccess"
                           arguments:
          @{@"orderId": orderId,
            @"transactionId": transactionId,
-           @"amountWithdrawnFromCard": @(amountWithdrawnFromCard)
+           @"amountWithdrawnFromCard": @(amountWithdrawnFromCard.doubleValue)
          }];
-        
-    } error:^(NSError * __nullable error) {
-        [self sendError:error forOrder:@""];
+
+    } error:^(MobilePayErrorPayment * __nullable error) {
+        [self sendError:error.error forOrder:@""];
     } cancel:^(MobilePayCancelledPayment * _Nullable mobilePayCancelledPayment) {
         [self->channel invokeMethod:@"mobilePayCancel"
                           arguments:

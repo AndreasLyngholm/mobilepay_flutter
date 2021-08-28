@@ -16,7 +16,7 @@ class MobilePay {
     _channel.setMethodCallHandler(methodCallHandler);
   }
 
-  final MethodChannel _channel = const MethodChannel('mobile_pay_flutter');
+  final MethodChannel _channel = const MethodChannel('mobilepay_flutter');
 
   Future<void> init(
       String merchantId, MobilePayCountry country, String merchantUrlScheme) {

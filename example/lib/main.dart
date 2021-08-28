@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:mobile_pay_app_switch_flutter/mobile_pay_app_switch_flutter.dart';
+import 'package:mobilepay_flutter/mobilepay_flutter.dart';
 
 void main() => runApp(MyApp());
 
@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> initMobilePay() async {
     bool mobilePlayInstalled;
 
-    MobilePay().init("APPFI0000000000", MobilePayCountry.DENMARK, "mbtest");
+    MobilePay().init("APPDK0000000000", MobilePayCountry.DENMARK, "simpleentrance");
 
     try {
       mobilePlayInstalled = await MobilePay().isMobilePayInstalled;

@@ -1,4 +1,4 @@
-group 'mobilepay.dk.mobile_pay_flutter'
+group 'mobilepay.dk.mobilepay_flutter'
 version '1.0-SNAPSHOT'
 
 buildscript {

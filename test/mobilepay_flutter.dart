@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  const MethodChannel channel = MethodChannel('mobile_pay_flutter');
+  const MethodChannel channel = MethodChannel('mobilepay_flutter');
 
   setUp(() {
     channel.setMockMethodCallHandler((MethodCall methodCall) async {

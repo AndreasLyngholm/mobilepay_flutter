@@ -1,4 +1,4 @@
-package mobilepay.dk.mobile_pay_flutter
+package simpleconcept.dk.mobilepay_flutter
 
 import dk.mobilepay.sdk.Country
 import dk.mobilepay.sdk.MobilePay
@@ -109,7 +109,7 @@ class MobilePayFlutterPlugin {
 
         @JvmStatic
         fun registerWith(registrar: Registrar) {
-            channel = MethodChannel(registrar.messenger(), "mobile_pay_flutter")
+            channel = MethodChannel(registrar.messenger(), "mobilepay_flutter")
             channel?.setMethodCallHandler(this)
             registrar.addActivityResultListener(this)
             this.registrar = registrar
