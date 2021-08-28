@@ -1,0 +1,25 @@
+name: mobilepay_flutter
+description: A Flutter plugin for MobilePay for DK
+version: 0.0.1
+homepage: https://github.com/AndreasLyngholm/mobilepay_flutter
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+  flutter: ">=1.12.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    android:
+      package: simpleconcept.dk.mobilepay_flutter
+      pluginClass: MobilePayFlutterPlugin
+    ios:
+      pluginClass: MobilePayFlutterPlugin
+
