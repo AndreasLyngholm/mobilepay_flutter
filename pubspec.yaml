@@ -1,6 +1,6 @@
 name: mobilepay_flutter
-description: A Flutter plugin for MobilePay for DK
-version: 0.0.1
+description: A Flutter plugin for MobilePay Appswitch for DK
+version: 0.0.2
 homepage: https://github.com/AndreasLyngholm/mobilepay_flutter
 
 environment:
