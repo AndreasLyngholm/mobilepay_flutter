@@ -52,7 +52,7 @@
         }
         result(nil);
     } else if([@"downloadMobilePay" isEqualToString:call.method]) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString: @"https://apps.apple.com/fi/app/mobilepay/id768172577"]];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString: @"https://apps.apple.com/dk/app/mobilepay/id624499138"]];
         result(nil);
     } else if([@"isMobilePayInstalled" isEqualToString:call.method]) {
         result(@(
