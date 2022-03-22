@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/android/mobile_pay_flutter_android.iml" filepath="$PROJECT_DIR$/android/mobile_pay_flutter_android.iml" />
       <module fileurl="file://$PROJECT_DIR$/example/android/mobile_pay_flutter_example_android.iml" filepath="$PROJECT_DIR$/example/android/mobile_pay_flutter_example_android.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobilepay_flutter.iml" filepath="$PROJECT_DIR$/mobilepay_flutter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/mobilepay_flutter_android.iml" filepath="$PROJECT_DIR$/android/mobilepay_flutter_android.iml" />
     </modules>
   </component>
 </project>

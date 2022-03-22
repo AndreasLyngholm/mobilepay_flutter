@@ -16,5 +16,9 @@ dev_dependencies:
 
 flutter:
   plugin:
-    androidPackage: simpleconcept.dk.mobilepay_flutter
-    pluginClass: MobilePayFlutterPlugin
+    platforms:
+      android:
+        package: simpleconcept.dk.mobilepay_flutter
+        pluginClass: MobilePayFlutterPlugin
+      ios:
+        pluginClass: MobilePayFlutterPlugin

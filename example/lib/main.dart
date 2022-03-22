@@ -77,7 +77,7 @@ class _MyAppState extends State<MyApp> {
       });
       try {
         final result = await MobilePay()
-            .createPayment(productPrice: 10.5, orderId: "fkjgjkdffgdj");
+            .createPayment(productPrice: 10.5, orderId: "some_order");
         setState(() {
           _paymentResult = result;
         });

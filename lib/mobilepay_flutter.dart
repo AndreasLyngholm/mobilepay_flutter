@@ -33,8 +33,7 @@ class MobilePay {
   }
 
   Future<MobilePayResult> createPayment({required double productPrice, required String orderId}) {
-    assert(productPrice != null);
-    assert(orderId != null);
+
     final completer = new Completer<MobilePayResult>();
     _orders[orderId] = completer;
     _channel.invokeMethod('createPayment', {
