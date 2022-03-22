@@ -1,23 +1,31 @@
 package simpleconcept.dk.mobilepay_flutter
 
+import android.app.Activity
+import android.content.Context
 import dk.mobilepay.sdk.Country
 import dk.mobilepay.sdk.MobilePay
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry.Registrar
 import dk.mobilepay.sdk.model.Payment
 import java.math.BigDecimal
 import android.content.Intent
-import io.flutter.plugin.common.PluginRegistry
+import android.util.Log
 import dk.mobilepay.sdk.model.FailureResult
 import dk.mobilepay.sdk.model.SuccessResult
 import dk.mobilepay.sdk.ResultCallback
-
+import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 
 class MobilePayFlutterPlugin {
-    companion object : PluginRegistry.ActivityResultListener, MethodCallHandler {
+    companion object : FlutterPlugin, MethodCallHandler, ActivityAware {
+
+        private lateinit var channel : MethodChannel
+
+        private lateinit var context: Context
+        private lateinit var activity: Activity
 
         fun getCountry(countryCode: String): Country {
             when {
@@ -57,23 +65,23 @@ class MobilePayFlutterPlugin {
 
                     val paymentIntent = MobilePay.getInstance().createPaymentIntent(payment)
 
-                    registrar?.activity()?.startActivityForResult(paymentIntent, requestCode)
+                    activity.startActivityForResult(paymentIntent, requestCode)
                     result.success(null)
                 }
                 call.method == "downloadMobilePay" -> {
-                    val intent = MobilePay.getInstance().createDownloadMobilePayIntent(registrar?.context()?.applicationContext!!)
-                    registrar?.activity()?.startActivity(intent)
+                    val intent = MobilePay.getInstance().createDownloadMobilePayIntent(context.applicationContext!!)
+                    activity.startActivity(intent)
                     result.success(null)
                 }
                 call.method == "isMobilePayInstalled" -> {
-                    val appContext = registrar?.context()?.applicationContext!!
+                    val appContext = context.applicationContext!!
                     result.success(MobilePay.getInstance().isMobilePayInstalled(appContext))
                 }
                 else -> result.notImplemented()
             }
         }
 
-        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent): Boolean {
+        fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent): Boolean {
             if (requestCode == this.requestCode) {
                 MobilePay.getInstance().handleResult(resultCode, data, object : ResultCallback {
                     override fun onSuccess(result: SuccessResult) {
@@ -82,7 +90,7 @@ class MobilePayFlutterPlugin {
                                 "orderId" to result.orderId,
                                 "signature" to result.signature,
                                 "transactionId" to result.transactionId)
-                        channel?.invokeMethod("mobilePaySuccess", args)
+                        channel.invokeMethod("mobilePaySuccess", args)
                     }
 
                     override fun onFailure(result: FailureResult) {
@@ -91,28 +99,45 @@ class MobilePayFlutterPlugin {
                                 "errorCode" to result.errorCode,
                                 "errorMessage" to result.errorMessage
                         )
-                        channel?.invokeMethod("mobilePayFailure", args)
+                        channel.invokeMethod("mobilePayFailure", args)
                     }
 
                     override fun onCancel(orderId: String) {
                         val args = mapOf("requestCode" to requestCode, "orderId" to orderId)
-                        channel?.invokeMethod("mobilePayCancel", args)
+                        channel.invokeMethod("mobilePayCancel", args)
                     }
                 })
             }
             return true
         }
 
-        var registrar: Registrar? = null
-        var channel: MethodChannel? = null
         var requestCode: Int = 1337
 
-        @JvmStatic
-        fun registerWith(registrar: Registrar) {
-            channel = MethodChannel(registrar.messenger(), "mobilepay_flutter")
-            channel?.setMethodCallHandler(this)
-            registrar.addActivityResultListener(this)
-            this.registrar = registrar
+        override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+            Log.d("***MsalFlutter***", "onAttachedToEngine")
+            channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "mobilepay_flutter")
+            channel.setMethodCallHandler(this);
+            context = flutterPluginBinding.applicationContext
+        }
+
+        override fun onDetachedFromEngine(p0: FlutterPlugin.FlutterPluginBinding) {
+            TODO("Not yet implemented")
+        }
+
+        override fun onAttachedToActivity(activityPluginBinding: ActivityPluginBinding) {
+            activity = activityPluginBinding.activity;
+        }
+
+        override fun onDetachedFromActivityForConfigChanges() {
+            TODO("Not yet implemented")
+        }
+
+        override fun onReattachedToActivityForConfigChanges(p0: ActivityPluginBinding) {
+            TODO("Not yet implemented")
+        }
+
+        override fun onDetachedFromActivity() {
+            TODO("Not yet implemented")
         }
     }
 }

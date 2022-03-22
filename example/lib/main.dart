@@ -6,7 +6,10 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:mobilepay_flutter/mobilepay_flutter.dart';
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -16,7 +19,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool _mobilePlayInstalled = false;
   bool _loading = false;
-  MobilePayResult _paymentResult;
+  MobilePayResult? _paymentResult;
 
   @override
   void initState() {
@@ -27,7 +30,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> initMobilePay() async {
     bool mobilePlayInstalled;
 
-    MobilePay().init("APPDK0000000000", MobilePayCountry.DENMARK, "simpleentrance");
+    MobilePay().init("APPDK0000000000", MobilePayCountry.DENMARK, "SIMPLECONCEPT");
 
     try {
       mobilePlayInstalled = await MobilePay().isMobilePayInstalled;
@@ -90,19 +93,19 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget buildPaymentResult() {
-    if (_paymentResult.isCanceled)
+    if (_paymentResult!.isCanceled)
       return Text(
         "Transaction canceled",
-        style: Theme.of(context).textTheme.display2,
+        style: Theme.of(context).textTheme.displayMedium,
       );
-    if (_paymentResult.isFailure)
+    if (_paymentResult!.isFailure)
       return Column(
         children: <Widget>[
           Text(
             "Transaction failure",
-            style: Theme.of(context).textTheme.display2,
+            style: Theme.of(context).textTheme.displayMedium,
           ),
-          Text("${_paymentResult.errorCode}: ${_paymentResult.errorMessage}")
+          Text("${_paymentResult!.errorCode}: ${_paymentResult!.errorMessage}")
         ],
       );
 
@@ -110,11 +113,11 @@ class _MyAppState extends State<MyApp> {
       children: <Widget>[
         Text(
           "Transaction successfully done",
-          style: Theme.of(context).textTheme.display2,
+          style: Theme.of(context).textTheme.displayMedium,
         ),
-        Text("${_paymentResult.amountWithdrawnFromCard} €"),
-        Text("${_paymentResult.orderId}"),
-        Text("${_paymentResult.transactionId}"),
+        Text("${_paymentResult!.amountWithdrawnFromCard} €"),
+        Text("${_paymentResult!.orderId}"),
+        Text("${_paymentResult!.transactionId}"),
       ],
     );
   }

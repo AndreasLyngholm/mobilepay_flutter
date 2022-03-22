@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 class MobilePay {
-  static MobilePay _instance;
+  static MobilePay? _instance;
 
   factory MobilePay() {
     _instance ??= MobilePay._create();
-    return _instance;
+    return _instance!;
   }
 
   Map<String, Completer<MobilePayResult>> _orders = {};
@@ -32,7 +32,7 @@ class MobilePay {
         .invokeMethod('setRequestCode', {'requestCode': requestCode});
   }
 
-  Future<MobilePayResult> createPayment({double productPrice, String orderId}) {
+  Future<MobilePayResult> createPayment({required double productPrice, required String orderId}) {
     assert(productPrice != null);
     assert(orderId != null);
     final completer = new Completer<MobilePayResult>();
@@ -48,7 +48,7 @@ class MobilePay {
     return _channel.invokeMethod('downloadMobilePay');
   }
 
-  Future<bool> get isMobilePayInstalled {
+  Future get isMobilePayInstalled {
     return _channel.invokeMethod('isMobilePayInstalled');
   }
 
@@ -88,12 +88,12 @@ class MobilePay {
 class MobilePayResult {
   final String orderId;
 
-  final double amountWithdrawnFromCard;
-  final String signature;
-  final String transactionId;
+  final double? amountWithdrawnFromCard;
+  final String? signature;
+  final String? transactionId;
 
-  final int errorCode;
-  final String errorMessage;
+  final int? errorCode;
+  final String? errorMessage;
 
   final bool isSuccess;
   final bool isFailure;
